@@ -14,34 +14,68 @@ variable "tags" {
   }
 }
 
-variable "server" {
+variable "name" {
+  default = "test"
+}
+
+variable "nic_subnetName" {
+  default = "PwS3-Shared-PAZ-Openshift-RG"
+}
+
+variable "nic_vnetName" {
+  default = "PwS3-Infra-NetShared-VNET"
+}
+variable "nic_resource_group_name" {
+  default = "PwS3-Infra-NetShared-RG"
+}
+variable "nic_enable_ip_forwarding" {
+  default = false
+}
+variable "nic_enable_accelerated_networking" {
+  default = false
+}
+variable "nic_ip_configuration" {
   default = {
-    name = "test"
-    nic = {
-      subnetName          = "PwS3-Shared-PAZ-Openshift-RG"
-      vnetName            = "PwS3-Infra-NetShared-VNET"
-      resource_group_name = "PwS3-Infra-NetShared-RG"
-    }
-    resource_group_name = "PwS3-GCInterrop-Openshift"
-    admin_username      = "azureadmin"
-    secretPasswordName  = "linuxDefaultPassword"
-    vm_size             = "Standard_F4"
-    ip_configuration = {
-      private_ip_address            = "null"
-      private_ip_address_allocation = "Dynamic"
-    }
-    storage_image_reference = {
-      publisher = "RedHat",
-      offer     = "RHEL",
-      sku       = "7.4",
-      version   = "latest"
-    }
-    storage_os_disk = {
-      caching       = "ReadWrite"
-      create_option = "FromImage"
-      os_type       = "Linux"
-      disk_size_gb  = "32"
-    }
+    private_ip_address            = "null"
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+variable "resource_group_name" {
+  default = "PwS3-GCInterrop-Openshift"
+}
+
+variable "admin_username" {
+  default = "azureadmin"
+}
+
+variable "secretPasswordName" {
+  default = "linuxDefaultPassword"
+}
+
+variable "custom_data" {
+  default = ""
+}
+
+variable "vm_size" {
+  default = "Standard_F4"
+}
+
+variable "storage_image_reference" {
+  default = {
+    publisher = "RedHat",
+    offer     = "RHEL",
+    sku       = "7.4",
+    version   = "latest"
+  }
+}
+
+variable "storage_os_disk" {
+  default = {
+    caching       = "ReadWrite"
+    create_option = "FromImage"
+    os_type       = "Linux"
+    disk_size_gb  = "32"
   }
 }
 

@@ -19,58 +19,55 @@ The following security controls can be met through configuration of this templat
 ## Usage
 
 ```terraform
-variable "location" {
-  description = "Location of the network"
-  default     = "canadacentral"
-}
+module "dockerweb" {
+  #source = "github.com/canada-ca-terraform-modules/simplevm?ref=20190724.1"
+  source = "./terraform-azurerm-basiclinuxvm"
 
-variable "tags" {
-  default = {
-    "Organizations"     = "PwP3-CCC-E&O"
-    "Classification"    = "Unclassified"
-    "Enviroment"        = "Sandbox"
-    "CostCenter"        = "PwP3-EA"
-    "Owner"             = "cloudteam@test.gc.ca"
+  name                              = "dockerweb"
+  resource_group_name               = "${var.envprefix}-CN-Docker"
+  admin_username                    = "azureadmin"
+  secretPasswordName                = "linuxDefaultPassword"
+  custom_data                       = "${data.template_cloudinit_config.config.rendered}"
+  nic_subnetName                    = "${var.envprefix}-CN-Docker"
+  nic_vnetName                      = "${var.envprefix}-CN-Net-VNET"
+  nic_resource_group_name           = "${var.envprefix}-CN-Net-RG"
+  nic_enable_ip_forwarding          = false
+  nic_enable_accelerated_networking = false
+  nic_ip_configuration = {
+    private_ip_address            = ""
+    private_ip_address_allocation = "Dynamic"
   }
-}
-
-module "app1" {
-  source = "github.com/canada-ca-terraform-modules/simplevm?ref=20190724.1"
-
-  server = {
-    name = "app1"
-    resource_group_name = "PwS3-GCInterrop-Openshift-RG"
-    admin_username      = "azureadmin"
-    secretPasswordName  = "linuxDefaultPassword"
-    nic = {
-      subnetName          = "PwS3-Shared-PAZ-Openshift"
-      vnetName            = "PwS3-Infra-NetShared-VNET"
-      resource_group_name = "PwS3-Infra-NetShared-RG"
-      enable_ip_forwarding          = false
-      enable_accelerated_networking = false
-      ip_configuration = {
-        private_ip_address            = "10.250.21.198"
-        private_ip_address_allocation = "Static"
-      }
-    }
-    vm_size             = "Standard_D2_v3"
-    storage_image_reference = {
-      publisher = "RedHat",
-      offer     = "RHEL",
-      sku       = "7.4",
-      version   = "latest"
-    }
-    storage_os_disk = {
-      caching       = "ReadWrite"
-      create_option = "FromImage"
-      os_type      = "Linux"
-      disk_size_gb = "64"
-    }
+  vm_size = "Standard_B1s"
+  storage_image_reference = {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
   }
+  storage_os_disk = {
+    caching       = "ReadWrite"
+    create_option = "FromImage"
+    os_type       = "Linux"
+    disk_size_gb  = "32"
+  }
+
   keyvault = {
-    name                = "PwS3-Infra-KV-simc2atbrf"
-    resource_group_name = "PwS3-Infra-Keyvault-RG"
+    name                = "${var.envprefix}-Core-KV-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${var.envprefix}-Core-Keyvault-RG"), 0, 8)}"
+    resource_group_name = "${var.envprefix}-Core-Keyvault-RG"
   }
+}
+
+data "template_cloudinit_config" "config" {
+  gzip          = true
+  base64_encode = true
+
+  part {
+    content = "${data.template_file.cloudconfig.rendered}"
+  }
+}
+
+data "template_file" "cloudconfig" {
+  template = "${file("init.sh")}"
 }
 ```
 
@@ -88,6 +85,7 @@ TO BE DOCUMENTED
 
 ## History
 
-| Date     | Release | Change     |
-| -------- | ------- | ---------- |
-| 20190724 |         | 1st deploy |
+| Date     | Release    | Change                    |
+| -------- | ---------- | ------------------------- |
+| 20190725 | 20190725.1 | Rework variable structure |
+| 20190724 |            | 1st deploy                |

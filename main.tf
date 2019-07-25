@@ -1,7 +1,7 @@
 resource azurerm_network_security_group NSG {
-  name                = "${var.server.name}-NSG"
+  name                = "${var.name}-NSG"
   location            = "${var.location}"
-  resource_group_name = "${var.server.resource_group_name}"
+  resource_group_name = "${var.resource_group_name}"
   security_rule {
     name                       = "AllowAllInbound"
     description                = "Allow all in"
@@ -30,50 +30,51 @@ resource azurerm_network_security_group NSG {
 }
 
 resource azurerm_network_interface NIC {
-  name                          = "${var.server.name}-Nic1"
+  name                          = "${var.name}-Nic1"
   location                      = "${var.location}"
-  resource_group_name           = "${var.server.resource_group_name}"
-  enable_ip_forwarding          = "${var.server.nic.enable_ip_forwarding}"
-  enable_accelerated_networking = "${var.server.nic.enable_accelerated_networking}"
+  resource_group_name           = "${var.resource_group_name}"
+  enable_ip_forwarding          = "${var.nic_enable_ip_forwarding}"
+  enable_accelerated_networking = "${var.nic_enable_accelerated_networking}"
   network_security_group_id     = "${azurerm_network_security_group.NSG.id}"
   ip_configuration {
     name                          = "ipconfig1"
     subnet_id                     = "${data.azurerm_subnet.subnet.id}"
-    private_ip_address            = "${var.server.nic.ip_configuration.private_ip_address}"
-    private_ip_address_allocation = "${var.server.nic.ip_configuration.private_ip_address_allocation}"
+    private_ip_address            = "${var.nic_ip_configuration.private_ip_address}"
+    private_ip_address_allocation = "${var.nic_ip_configuration.private_ip_address_allocation}"
     primary                       = true
   }
 }
 
-resource azurerm_virtual_machine mastervm {
-  name                             = "${var.server.name}"
+resource azurerm_virtual_machine VM {
+  name                             = "${var.name}"
   location                         = "${var.location}"
-  resource_group_name              = "${var.server.resource_group_name}"
-  vm_size                          = "${var.server.vm_size}"
+  resource_group_name              = "${var.resource_group_name}"
+  vm_size                          = "${var.vm_size}"
   network_interface_ids            = ["${azurerm_network_interface.NIC.id}"]
   primary_network_interface_id     = "${azurerm_network_interface.NIC.id}"
   delete_data_disks_on_termination = "true"
   delete_os_disk_on_termination    = "true"
   os_profile {
-    computer_name  = "${var.server.name}"
-    admin_username = "${var.server.admin_username}"
+    computer_name  = "${var.name}"
+    admin_username = "${var.admin_username}"
     admin_password = "${data.azurerm_key_vault_secret.secretPassword.value}"
+    custom_data    = "${var.custom_data}"
   }
   storage_image_reference {
-    publisher = "${var.server.storage_image_reference.publisher}"
-    offer     = "${var.server.storage_image_reference.offer}"
-    sku       = "${var.server.storage_image_reference.sku}"
-    version   = "${var.server.storage_image_reference.version}"
+    publisher = "${var.storage_image_reference.publisher}"
+    offer     = "${var.storage_image_reference.offer}"
+    sku       = "${var.storage_image_reference.sku}"
+    version   = "${var.storage_image_reference.version}"
   }
   os_profile_linux_config {
     disable_password_authentication = false
   }
   storage_os_disk {
-    name          = "${var.server.name}-OsDisk_1"
-    caching       = "${var.server.storage_os_disk.caching}"
-    create_option = "${var.server.storage_os_disk.create_option}"
-    os_type       = "${var.server.storage_os_disk.os_type}"
-    disk_size_gb  = "${var.server.storage_os_disk.disk_size_gb}"
+    name          = "${var.name}-OsDisk_1"
+    caching       = "${var.storage_os_disk.caching}"
+    create_option = "${var.storage_os_disk.create_option}"
+    os_type       = "${var.storage_os_disk.os_type}"
+    disk_size_gb  = "${var.storage_os_disk.disk_size_gb}"
   }
   tags = "${var.tags}"
 }
