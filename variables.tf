@@ -28,6 +28,9 @@ variable "nic_vnetName" {
 variable "nic_resource_group_name" {
   default = "PwS3-Infra-NetShared-RG"
 }
+variable "dnsServers" {
+  default = ""
+}
 variable "nic_enable_ip_forwarding" {
   default = false
 }

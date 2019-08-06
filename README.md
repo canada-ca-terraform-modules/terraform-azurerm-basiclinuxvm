@@ -85,7 +85,7 @@ TO BE DOCUMENTED
 
 ## History
 
-| Date     | Release    | Change                    |
-| -------- | ---------- | ------------------------- |
-| 20190725 | 20190725.1 | Rework variable structure |
-| 20190724 |            | 1st deploy                |
+| Date     | Release    | Change                         |
+| -------- | ---------- | ------------------------------ |
+| 20190806 | 20190806.1 | Add custom dns servers support |
+| 20190724 |            | 1st deploy                     |
