@@ -29,7 +29,7 @@ variable "nic_resource_group_name" {
   default = "PwS3-Infra-NetShared-RG"
 }
 variable "dnsServers" {
-  default = ""
+  default = null
 }
 variable "nic_enable_ip_forwarding" {
   default = false
