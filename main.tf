@@ -83,6 +83,6 @@ resource azurerm_virtual_machine VM {
 
 resource "null_resource" "module_depends_on" {
   triggers = {
-    value = "${var.module_depends_on}"
+    value = "${length(var.module_depends_on)}"
   }
 }
