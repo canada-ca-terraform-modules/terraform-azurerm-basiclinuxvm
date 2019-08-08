@@ -49,7 +49,6 @@ resource azurerm_network_interface NIC {
 
 resource azurerm_virtual_machine VM {
   name                             = "${var.name}"
-  depends_on                       = "${var.module_depends_on}"
   location                         = "${var.location}"
   resource_group_name              = "${var.resource_group_name}"
   vm_size                          = "${var.vm_size}"
@@ -80,10 +79,4 @@ resource azurerm_virtual_machine VM {
     disk_size_gb  = "${var.storage_os_disk.disk_size_gb}"
   }
   tags = "${var.tags}"
-}
-
-resource "null_resource" "module_depends_on" {
-  triggers = {
-    value = "${length(var.module_depends_on)}"
-  }
 }
