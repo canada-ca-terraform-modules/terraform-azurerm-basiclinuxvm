@@ -49,7 +49,7 @@ resource azurerm_network_interface NIC {
 
 resource azurerm_virtual_machine VM {
   name                             = "${var.name}"
-  depends_on                       = "${null_resource.module_depends_on.value}"
+  depends_on                       = "${var.module_depends_on}"
   location                         = "${var.location}"
   resource_group_name              = "${var.resource_group_name}"
   vm_size                          = "${var.vm_size}"
