@@ -80,3 +80,9 @@ resource azurerm_virtual_machine VM {
   }
   tags = "${var.tags}"
 }
+
+resource "null_resource" "module_depends_on" {
+  triggers = {
+    value = "${var.module_depends_on}"
+  }
+}
