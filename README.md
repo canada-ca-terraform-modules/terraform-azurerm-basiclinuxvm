@@ -73,19 +73,12 @@ data "template_file" "cloudconfig" {
 
 ## Parameter Values
 
-TO BE DOCUMENTED
-
-### Tag variable
-
-| Name     | Type   | Required | Value      |
-| -------- | ------ | -------- | ---------- |
-| tagname1 | string | No       | tag1 value |
-| ...      | ...    | ...      | ...        |
-| tagnameX | string | No       | tagX value |
+[Variables details](variables.tf)
 
 ## History
 
-| Date     | Release    | Change                         |
-| -------- | ---------- | ------------------------------ |
-| 20190806 | 20190806.1 | Add custom dns servers support |
-| 20190724 |            | 1st deploy                     |
+| Date     | Release    | Change                                                                            |
+| -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
+| 20190806 | 20190806.1 | Add custom dns servers support                                                    |
+| 20190724 |            | 1st deploy                                                                        |
