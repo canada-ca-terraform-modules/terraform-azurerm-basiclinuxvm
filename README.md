@@ -77,8 +77,9 @@ data "template_file" "cloudconfig" {
 
 ## History
 
-| Date     | Release    | Change                                                                            |
-| -------- | ---------- | --------------------------------------------------------------------------------- |
-| 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
-| 20190806 | 20190806.1 | Add custom dns servers support                                                    |
-| 20190724 |            | 1st deploy                                                                        |
+| Date     | Release    | Change                                                                              |
+| -------- | ---------- | ----------------------------------------------------------------------------------- |
+| 20190821 | 20190821.1 | Add support for optional dataDisks, disk Encryption, Monitoring and shutdown config |
+| 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution.   |
+| 20190806 | 20190806.1 | Add custom dns servers support                                                      |
+| 20190724 |            | 1st deploy                                                                          |

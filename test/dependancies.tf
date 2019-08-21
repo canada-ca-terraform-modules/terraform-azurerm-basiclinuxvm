@@ -17,7 +17,7 @@ resource "azurerm_subnet" "subnet1" {
 }
 
 resource "azurerm_key_vault" "test-keyvault" {
-  name                            = "test-KV-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${azurerm_resource_group.test-RG.name}"),0,8)}"
+  name                            = "test-KV-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${azurerm_resource_group.test-RG.name}"), 0, 8)}"
   location                        = "${var.location}"
   resource_group_name             = "${azurerm_resource_group.test-RG.name}"
   sku_name                        = "standard"
@@ -72,4 +72,11 @@ resource "azurerm_key_vault_secret" "serverPassword" {
   name         = "serverPassword"
   value        = "Canada123!"
   key_vault_id = "${azurerm_key_vault.test-keyvault.id}"
+}
+
+resource "azurerm_log_analytics_workspace" "logAnalyticsWS" {
+  name                = "logAnalyticsWS-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${azurerm_resource_group.test-RG.name}"), 0, 8)}"
+  location            = "${var.location}"
+  resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  sku                 = "pergb2018"
 }

@@ -36,13 +36,14 @@ module "test-basiclinuxvm" {
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
   nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
-  vm_size                 = "Standard_B1s"
+  vm_size                 = "Standard_B2ms"
   storage_image_reference = {
     publisher = "Canonical"
     offer     = "UbuntuServer"
     sku       = "18.04-LTS"
     version   = "latest"
   }
+  encryptDisks = true
   keyvault = {
     name                = "${azurerm_key_vault.test-keyvault.name}"
     resource_group_name = "${azurerm_resource_group.test-RG.name}"
@@ -52,22 +53,31 @@ module "test-basiclinuxvm" {
 module "test-basiclinuxvm2" {
   source = "../."
 
-  vm_depends_on                     = ["${module.test-basiclinuxvm.vm}"]
-  name                              = "test2"
-  resource_group_name               = "${azurerm_resource_group.test-RG.name}"
-  admin_username                    = "azureadmin"
-  secretPasswordName                = "${azurerm_key_vault_secret.serverPassword.name}"
-  nic_subnetName                    = "${azurerm_subnet.subnet1.name}"
-  nic_vnetName                      = "${azurerm_virtual_network.test-VNET.name}"
-  nic_resource_group_name           = "${azurerm_resource_group.test-RG.name}"
-  dnsServers                        = ["168.63.129.16"]
-  nic_enable_ip_forwarding          = false
-  nic_enable_accelerated_networking = false
+  vm_depends_on           = ["${module.test-basiclinuxvm.vm}"]
+  name                    = "test2"
+  resource_group_name     = "${azurerm_resource_group.test-RG.name}"
+  admin_username          = "azureadmin"
+  secretPasswordName      = "${azurerm_key_vault_secret.serverPassword.name}"
+  nic_subnetName          = "${azurerm_subnet.subnet1.name}"
+  nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
+  nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  dnsServers              = ["168.63.129.16"]
+  vm_size                 = "Standard_B2ms"
+  data_disk_sizes_gb      = [40, 60]
+  monitoringAgent = {
+    log_analytics_workspace_name                = "${azurerm_log_analytics_workspace.logAnalyticsWS.name}"
+    log_analytics_workspace_resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  }
+  shutdownConfig = {
+    autoShutdownStatus = "Enabled"
+    autoShutdownTime = "17:00"
+    autoShutdownTimeZone = "Eastern Standard Time"
+    autoShutdownNotificationStatus = "Disabled"
+  }
   nic_ip_configuration = {
     private_ip_address            = "10.10.10.10"
     private_ip_address_allocation = "Static"
   }
-  vm_size = "Standard_B1s"
   keyvault = {
     name                = "${azurerm_key_vault.test-keyvault.name}"
     resource_group_name = "${azurerm_resource_group.test-RG.name}"

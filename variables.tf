@@ -1,3 +1,23 @@
+/*
+List of option related variables:
+
+custom_data = "some custom shell code to execute. Eg: ${file("serverconfig/jumpbox-init.sh")}"
+
+monitoringAgent = {
+  log_analytics_workspace_name = "somename"
+  log_analytics_workspace_resource_group_name = "someRGName"
+}
+
+shutdownConfig = {
+  autoShutdownStatus = "Enabled"
+  autoShutdownTime = "17:00"
+  autoShutdownTimeZone = "Eastern Standard Time"
+  autoShutdownNotificationStatus = "Disabled"
+}
+
+Those can be set optionally if you want to deploy with optional features
+*/
+
 variable "location" {
   description = "Location of the network"
   default     = "canadacentral"
@@ -13,6 +33,11 @@ variable "tags" {
 
 variable "name" {
   description = "Name of the linux vm"
+}
+
+variable "data_disk_sizes_gb" {
+  description = "List of data disk sizes in gigabytes required for the VM. EG.: If 3 data disks are required then data_disk_size_gb might look like [40,100,60] for disk 1 of 40 GB, disk 2 of 100 GB and disk 3 of 60 GB"
+  default = []
 }
 
 variable "nic_subnetName" {

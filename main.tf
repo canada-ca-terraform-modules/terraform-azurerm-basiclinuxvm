@@ -79,5 +79,15 @@ resource azurerm_virtual_machine VM {
     os_type       = "${var.storage_os_disk.os_type}"
     disk_size_gb  = "${var.storage_os_disk.disk_size_gb}"
   }
+  dynamic "storage_data_disk" {
+    for_each = "${var.data_disk_sizes_gb}"
+    content {
+      name          = "${var.name}-DataDisk_${storage_data_disk.key + 1}"
+      create_option = "Empty"
+      lun           = "${storage_data_disk.key}"
+      disk_size_gb  = "${storage_data_disk.value}"
+      caching       = "ReadWrite"
+    }
+  }
   tags = "${var.tags}"
 }
