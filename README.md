@@ -1,4 +1,4 @@
-# Terraform Basic Virtual Machine
+# Terraform Basic Linux Virtual Machine
 
 ## Introduction
 
@@ -12,74 +12,190 @@ The following security controls can be met through configuration of this templat
 
 ## Dependancies
 
-* [Resource Groups](https://github.com/canada-ca-azure-templates/resourcegroups/blob/master/readme.md)
-* [Keyvault](https://github.com/canada-ca-azure-templates/keyvaults/blob/master/readme.md)
-* [VNET-Subnet](https://github.com/canada-ca-azure-templates/vnet-subnet/blob/master/readme.md)
+Hard:
+
+* Resource Groups
+* Keyvault
+* VNET-Subnet
+
+Optional (depending on options configured):
+
+* log analytics workspace
 
 ## Usage
 
 ```terraform
 module "dockerweb" {
-  #source = "github.com/canada-ca-terraform-modules/simplevm?ref=20190724.1"
-  source = "./terraform-azurerm-basiclinuxvm"
+  source = "github.com/canada-ca-terraform-modules/simplevm?ref=20190821.1"
 
   name                              = "dockerweb"
-  resource_group_name               = "${var.envprefix}-CN-Docker"
-  admin_username                    = "azureadmin"
-  secretPasswordName                = "linuxDefaultPassword"
-  custom_data                       = "${data.template_cloudinit_config.config.rendered}"
-  nic_subnetName                    = "${var.envprefix}-CN-Docker"
-  nic_vnetName                      = "${var.envprefix}-CN-Net-VNET"
-  nic_resource_group_name           = "${var.envprefix}-CN-Net-RG"
-  nic_enable_ip_forwarding          = false
-  nic_enable_accelerated_networking = false
-  nic_ip_configuration = {
-    private_ip_address            = ""
-    private_ip_address_allocation = "Dynamic"
-  }
-  vm_size = "Standard_B1s"
-  storage_image_reference = {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "18.04-LTS"
-    version   = "latest"
-  }
-  storage_os_disk = {
-    caching       = "ReadWrite"
-    create_option = "FromImage"
-    os_type       = "Linux"
-    disk_size_gb  = "32"
-  }
-
+  resource_group_name               = "some-RG-Name"
+  admin_username                    = "someusername"
+  secretPasswordName                = "somekeyvaultsecretname"
+  nic_subnetName                    = "some-subnet-name"
+  nic_vnetName                      = "some-vnet-name"
+  nic_resource_group_name           = "some-vnet-resourcegroup-name"
+  vm_size                           = "Standard_D2_v3"
   keyvault = {
-    name                = "${var.envprefix}-Core-KV-${substr(sha1("${data.azurerm_client_config.current.subscription_id}${var.envprefix}-Core-Keyvault-RG"), 0, 8)}"
-    resource_group_name = "${var.envprefix}-Core-Keyvault-RG"
+    name                = "some-keyvault-name"
+    resource_group_name = "some-keyvault-resourcegroup-name"
   }
-}
-
-data "template_cloudinit_config" "config" {
-  gzip          = true
-  base64_encode = true
-
-  part {
-    content = "${data.template_file.cloudconfig.rendered}"
-  }
-}
-
-data "template_file" "cloudconfig" {
-  template = "${file("init.sh")}"
 }
 ```
 
-## Parameter Values
 
-[Variables details](variables.tf)
+## Variables Values
+
+| Name                               | Type   | Required | Value                                                                                                                                                                                                       |
+| ---------------------------------- | ------ | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| name                               | string | yes      | Name of the vm                                                                                                                                                                                              |
+| resource_group_name                | string | yes      | Name of the resourcegroup that will contain the VM resources                                                                                                                                                |
+| admin_username                     | string | yes      | Name of the VM admin account                                                                                                                                                                                |
+| secretPasswordName                 | string | yes      | Name of the Keyvault secret containing the VM admin account password                                                                                                                                        |
+| nic_subnetName                     | string | yes      | Name of the subnet to which the VM NIC will connect to                                                                                                                                                      |
+| nic_vnetName                       | string | yes      | Name of the VNET the subnet is part of                                                                                                                                                                      |
+| nic_resource_group_name            | string | yes      | Name of the resourcegroup containing the VNET                                                                                                                                                               |
+| vm_size                            | string | yes      | Specifies the desired size of the Virtual Machine. Eg: Standard_F4                                                                                                                                          |
+| keyvault                           | object | yes      | Object containing keyvault resource configuration. - [keyvault](#keyvault-object)                                                                                                                           |
+| location                           | string | no       | Azure location for resources. Default: canadacentral                                                                                                                                                        |
+| tags                               | object | no       | Object containing a tag values - [tags pairs](#tag-object)                                                                                                                                                  |
+| data_disk_sizes_gb                 | list   | no       | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list)                                                                                                                    |
+| dnsServers                         | list   | no       | List of DNS servers IP addresses as string to use for this NIC, overrides the VNet-level dns server list - [dns servers](#dns-servers-list)                                                                 |
+| nic_enable_ip_forwarding           | bool   | no       | Enables IP Forwarding on the NIC. Default: false                                                                                                                                                            |
+| nic_enable_accelerated_networkingg | bool   | no       | Enables Azure Accelerated Networking using SR-IOV. Only certain VM instance sizes are supported. Default: false                                                                                             |
+| nic_ip_configuration               | object | no       | Defines how a private IP address is assigned. Options are Static or Dynamic. In case of Static also specifiy the desired privat IP address. Default: Dynamic - [ip configuration](#ip-configuration-object) |
+| public_ip                          | bool   | no       | Does the VM require a public IP. true or false. Default: false                                                                                                                                              |
+| storage_image_reference            | object | no       | Specify the storage image used to create the VM. Default is 2016-Datacenter. - [storage image](#storage-image-reference-object)                                                                             |
+| storage_os_disk                    | object | no       | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
+| custom_data                        | string | no       | some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.sh")}                                                                                                                                |
+| encryptDisk                        | bool   | no       | Configure if VM disks should be encrypted with Bitlocker. Default false                                                                                                                                     |
+| monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
+| shutdownConfig                     | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
+
+### tag object
+
+Example tag variable:
+
+```hcl
+tags = {
+  "tag1name" = "somevalue"
+  "tag2name" = "someothervalue"
+  .
+  .
+  .
+  "tagXname" = "some other value"
+}
+```
+
+### data disk list
+
+Example data_disk_size_gb variable. The following example would deploy 3 data disks. One one of 40GB, one of 100GB and a last of 60GB:
+
+```hcl
+data_disk_size_gb = [40,100,60]
+```
+
+### dns servers list
+
+Example dnsServers variable. The following example would configure 2 dns servers:
+
+```hcl
+dnsServers = ["10.20.30.40","10.20.30.41]
+```
+
+### ip configuration object
+
+| Name                          | Type   | Required | Value                                           |
+| ----------------------------- | ------ | -------- | ----------------------------------------------- |
+| private_ip_address            | string | yes      | Static IP desired. Set to null if using Dynamic |
+| private_ip_address_allocation | string | yes      | Set to either Dynamic or Static                 |
+
+Example variable for static ip:
+
+```hcl
+nic_ip_configuration = {
+  private_ip_address            = "10.20.30.42"
+  private_ip_address_allocation = "Static"
+}
+```
+
+### #storage image reference object
+
+| Name      | Type       | Required           | Value                                                                                              |
+| --------- | ---------- | ------------------ | -------------------------------------------------------------------------------------------------- |
+| publisher | string     | yes                | The image publisher.                                                                               |
+| offer     | string     | yes                | Specifies the offer of the platform image or marketplace image used to create the virtual machine. |
+| sku       | string     | yes                | The image SKU.                                                                                     |
+| version   | string yes | The image version. |
+
+Example variable:
+
+```hcl
+storage_image_reference = {
+  publisher = "RedHat",
+  offer     = "RHEL",
+  sku       = "7.4",
+  version   = "latest"
+}
+```
+
+### keyvault object
+
+| Name                | Type   | Required | Value                                                    |
+| ------------------- | ------ | -------- | -------------------------------------------------------- |
+| name                | string | yes      | Name of the keyvault resource                            |
+| resource_group_name | string | yes      | Name of the resource group where the keyvault is located |
+
+Example variable:
+
+```hcl
+keyvault = {
+  name                = "some-keyvault-name"
+  resource_group_name = "some-resource-group-name"
+}
+```
+
+### monitoring agent object
+
+| Name                                        | Type   | Required | Value                                                                |
+| ------------------------------------------- | ------ | -------- | -------------------------------------------------------------------- |
+| log_analytics_workspace_name                | string | Yes      | Name of the log analytics workspace that the VM will send logs to.   |
+| log_analytics_workspace_resource_group_name | string | Yes      | Name of the resource group that contain the log analytics workspace. |
+
+Example variable:
+
+```hcl
+monitoringAgent = {
+  log_analytics_workspace_name                = "somename"
+  log_analytics_workspace_resource_group_name = "someRGName"
+}
+```
+
+### shutdown config object
+
+| Name                           | Type   | Required | Value                                                                                          |
+| ------------------------------ | ------ | -------- | ---------------------------------------------------------------------------------------------- |
+| autoShutdownStatus             | string | Yes      | Name of the VM                                                                                 |
+| autoShutdownTime               | string | Yes      | The time of day the schedule will occur. Eg: 17:00                                             |
+| autoShutdownTimeZone           | string | Yes      | Timezone ID. Eg: Eastern Standard Time                                                         |
+| autoShutdownNotificationStatus | string | Yes      | If notifications are enabled for this schedule (i.e. Enabled, Disabled). - Enabled or Disabled |
+
+Example variable:
+
+```hcl
+shutdownConfig = {
+  autoShutdownStatus = "Enabled"
+  autoShutdownTime = "17:00"
+  autoShutdownTimeZone = "Eastern Standard Time"
+  autoShutdownNotificationStatus = "Disabled"
+}
+```
 
 ## History
 
-| Date     | Release    | Change                                                                              |
-| -------- | ---------- | ----------------------------------------------------------------------------------- |
-| 20190821 | 20190821.1 | Add support for optional dataDisks, disk Encryption, Monitoring and shutdown config |
-| 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution.   |
-| 20190806 | 20190806.1 | Add custom dns servers support                                                      |
-| 20190724 |            | 1st deploy                                                                          |
+| Date     | Release    | Change                                                                            |
+| -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190823 |            | Update documentation                                                              |
+| 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
+| 20190806 | 20190806.1 | Add custom dns servers support                                                    |
+| 20190724 |            | 1st deploy                                                                        |
