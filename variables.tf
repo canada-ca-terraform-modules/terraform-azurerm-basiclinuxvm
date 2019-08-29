@@ -65,9 +65,14 @@ variable "nic_enable_accelerated_networking" {
 variable "nic_ip_configuration" {
   description = "Defines how a private IP address is assigned. Options are Static or Dynamic. In case of Static also specifiy the desired privat IP address"
   default = {
-    private_ip_address            = null
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address            = [null]
+    private_ip_address_allocation = ["Dynamic"]
   }
+}
+
+variable "public_ip" {
+  description = "Should the VM be assigned public IP(s). True or false."
+  default     = false
 }
 
 variable "resource_group_name" {

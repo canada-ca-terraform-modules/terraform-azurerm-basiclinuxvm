@@ -69,15 +69,16 @@ module "test-basiclinuxvm2" {
     log_analytics_workspace_resource_group_name = "${azurerm_resource_group.test-RG.name}"
   }
   shutdownConfig = {
-    autoShutdownStatus = "Enabled"
-    autoShutdownTime = "17:00"
-    autoShutdownTimeZone = "Eastern Standard Time"
+    autoShutdownStatus             = "Enabled"
+    autoShutdownTime               = "17:00"
+    autoShutdownTimeZone           = "Eastern Standard Time"
     autoShutdownNotificationStatus = "Disabled"
   }
   nic_ip_configuration = {
-    private_ip_address            = "10.10.10.10"
-    private_ip_address_allocation = "Static"
+    private_ip_address            = ["10.10.10.10"]
+    private_ip_address_allocation = ["Static"]
   }
+  public_ip = true
   keyvault = {
     name                = "${azurerm_key_vault.test-keyvault.name}"
     resource_group_name = "${azurerm_resource_group.test-RG.name}"
