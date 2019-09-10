@@ -106,6 +106,11 @@ variable "storage_image_reference" {
   }
 }
 
+variable "plan" {
+  description = "An optional plan block"
+  default = null
+}
+
 variable "storage_os_disk" {
   description = "This block describe the parameters for the OS disk. Refer to https://www.terraform.io/docs/providers/azurerm/r/virtual_machine.html for more details."
   default = {

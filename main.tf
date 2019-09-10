@@ -84,6 +84,14 @@ resource azurerm_virtual_machine VM {
     sku       = "${var.storage_image_reference.sku}"
     version   = "${var.storage_image_reference.version}"
   }
+  dynamic "plan" {
+    for_each = "${local.plan}"
+    content {
+      name = "${local.plan[0].name}"
+      product = "${local.plan[0].product}"
+      publisher = "${local.plan[0].publisher}"
+    }
+  }
   os_profile_linux_config {
     disable_password_authentication = false
   }

@@ -84,3 +84,33 @@ module "test-basiclinuxvm2" {
     resource_group_name = "${azurerm_resource_group.test-RG.name}"
   }
 }
+
+module "test-basiclinuxv3-plan" {
+  source = "../."
+
+  vm_depends_on           = ["${module.test-basiclinuxvm.vm}"]
+  name                    = "test3"
+  resource_group_name     = "${azurerm_resource_group.test-RG.name}"
+  admin_username          = "azureadmin"
+  secretPasswordName      = "${azurerm_key_vault_secret.serverPassword.name}"
+  nic_subnetName          = "${azurerm_subnet.subnet1.name}"
+  nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
+  nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  vm_size                 = "Standard_DS2_v2"
+  storage_image_reference = {
+    publisher = "fortinet"
+    offer     = "fortinet-fortimanager"
+    sku       = "fortinet-fortimanager"
+    version   = "latest"
+  }
+  data_disk_sizes_gb = [1023]
+  plan = {
+    name = "fortinet-fortimanager"
+    publisher = "fortinet"
+    product = "fortinet-fortimanager"
+  }
+  keyvault = {
+    name                = "${azurerm_key_vault.test-keyvault.name}"
+    resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  }
+}

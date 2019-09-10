@@ -26,7 +26,7 @@ Optional (depending on options configured):
 
 ```terraform
 module "dockerweb" {
-  source = "github.com/canada-ca-terraform-modules/simplevm?ref=20190821.1"
+  source = "github.com/canada-ca-terraform-modules/simplevm?ref=20190910.1"
 
   name                              = "dockerweb"
   resource_group_name               = "some-RG-Name"
@@ -66,6 +66,7 @@ module "dockerweb" {
 | nic_ip_configuration               | object | no       | Defines how a private IP address is assigned. Options are Static or Dynamic. In case of Static also specifiy the desired privat IP address. Default: Dynamic - [ip configuration](#ip-configuration-object) |
 | public_ip                          | bool   | no       | Does the VM require a public IP. true or false. Default: false                                                                                                                                              |
 | storage_image_reference            | object | no       | Specify the storage image used to create the VM. Default is 2016-Datacenter. - [storage image](#storage-image-reference-object)                                                                             |
+| plan                               | object | no       | Specify the plan used to create the VM. Default is null. - [plan](#plan-object)                                                                                                                             |
 | storage_os_disk                    | object | no       | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
 | custom_data                        | string | no       | some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.sh")}                                                                                                                                |
 | encryptDisk                        | bool   | no       | Configure if VM disks should be encrypted with Bitlocker. Default false                                                                                                                                     |
@@ -127,7 +128,7 @@ nic_ip_configuration = {
 }
 ```
 
-### #storage image reference object
+### storage image reference object
 
 | Name      | Type       | Required           | Value                                                                                              |
 | --------- | ---------- | ------------------ | -------------------------------------------------------------------------------------------------- |
@@ -140,10 +141,28 @@ Example variable:
 
 ```hcl
 storage_image_reference = {
-  publisher = "RedHat",
-  offer     = "RHEL",
-  sku       = "7.4",
+  publisher = "RedHat"
+  offer     = "RHEL"
+  sku       = "7.4"
   version   = "latest"
+}
+```
+
+### plan object
+
+| Name      | Type   | Required | Value               |
+| --------- | ------ | -------- | ------------------- |
+| name      | string | yes      | The plan nome.      |
+| publisher | string | yes      | The publisher name. |
+| product   | string | yes      | The product name.   |
+
+Example variable:
+
+```hcl
+plan = {
+    name      = "fortinet-fortimanager"
+    publisher = "fortinet"
+    product   = "fortinet-fortimanager"
 }
 ```
 
@@ -203,6 +222,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190910 | 20190910.1 | Add support for optional plan configuration                                       |
 | 20190829 | 20190829.1 | Add support for multiple IP per NIC and optional Public IP                        |
 | 20190823 |            | Update documentation                                                              |
 | 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
