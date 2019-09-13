@@ -1,5 +1,5 @@
 resource azurerm_network_security_group NSG {
-  name                = "${var.name}-NSG"
+  name                = "${var.name}-nsg"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
   security_rule {
@@ -32,7 +32,7 @@ resource azurerm_network_security_group NSG {
 # If public_ip is true then create resource. If not then do not create any
 resource azurerm_public_ip VM-EXT-PubIP {
   count               = var.public_ip ? length(var.nic_ip_configuration.private_ip_address_allocation) : 0
-  name                = "${var.name}-EXT-PubIP${count.index + 1}"
+  name                = "${var.name}-pip${count.index + 1}"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
   sku                 = "Standard"
@@ -41,7 +41,7 @@ resource azurerm_public_ip VM-EXT-PubIP {
 }
 
 resource azurerm_network_interface NIC {
-  name                          = "${var.name}-Nic1"
+  name                          = "${var.name}-nic1"
   location                      = "${var.location}"
   resource_group_name           = "${var.resource_group_name}"
   enable_ip_forwarding          = "${var.nic_enable_ip_forwarding}"
@@ -63,7 +63,7 @@ resource azurerm_network_interface NIC {
 }
 
 resource azurerm_virtual_machine VM {
-  name                             = "${var.name}"
+  name                             = "${var.name}-vm"
   depends_on                       = [var.vm_depends_on]
   location                         = "${var.location}"
   resource_group_name              = "${var.resource_group_name}"
@@ -75,7 +75,7 @@ resource azurerm_virtual_machine VM {
   os_profile {
     computer_name  = "${var.name}"
     admin_username = "${var.admin_username}"
-    admin_password = "${data.azurerm_key_vault_secret.secretPassword.value}"
+    admin_password = "${var.admin_password}"
     custom_data    = "${var.custom_data}"
   }
   storage_image_reference {
@@ -96,7 +96,7 @@ resource azurerm_virtual_machine VM {
     disable_password_authentication = false
   }
   storage_os_disk {
-    name          = "${var.name}-OsDisk_1"
+    name          = "${var.name}-osdisk1"
     caching       = "${var.storage_os_disk.caching}"
     create_option = "${var.storage_os_disk.create_option}"
     os_type       = "${var.storage_os_disk.os_type}"
@@ -105,7 +105,7 @@ resource azurerm_virtual_machine VM {
   dynamic "storage_data_disk" {
     for_each = "${var.data_disk_sizes_gb}"
     content {
-      name          = "${var.name}-DataDisk_${storage_data_disk.key + 1}"
+      name          = "${var.name}-datadisk${storage_data_disk.key + 1}"
       create_option = "Empty"
       lun           = "${storage_data_disk.key}"
       disk_size_gb  = "${storage_data_disk.value}"

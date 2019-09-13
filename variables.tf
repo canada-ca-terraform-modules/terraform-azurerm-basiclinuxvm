@@ -83,8 +83,8 @@ variable "admin_username" {
   description = "Name of the VM admin account"
 }
 
-variable "secretPasswordName" {
-  description = "Name of the secret containing the VM admin account password"
+variable "admin_password" {
+  description = "Password of the VM admin account"
 }
 
 variable "custom_data" {
@@ -118,13 +118,5 @@ variable "storage_os_disk" {
     create_option = "FromImage"
     os_type       = null
     disk_size_gb  = null
-  }
-}
-
-variable "keyvault" {
-  description = "This block describe the keyvault resource name and resourcegroup name containing the keyvault"
-  default = {
-    name                = ""
-    resource_group_name = ""
   }
 }

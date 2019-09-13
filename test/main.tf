@@ -31,7 +31,7 @@ module "test-basiclinuxvm" {
   name                    = "test1"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
-  secretPasswordName      = "${azurerm_key_vault_secret.serverPassword.name}"
+  admin_password          = "Canada123456!"
   custom_data             = "${data.template_cloudinit_config.config.rendered}"
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
@@ -43,10 +43,9 @@ module "test-basiclinuxvm" {
     sku       = "18.04-LTS"
     version   = "latest"
   }
-  encryptDisks = true
-  keyvault = {
-    name                = "${azurerm_key_vault.test-keyvault.name}"
-    resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  encryptDisks = {
+    KeyVaultResourceId: "${azurerm_key_vault.test-keyvault.id}"
+    KeyVaultURL: "${azurerm_key_vault.test-keyvault.vault_uri}"
   }
 }
 
@@ -57,7 +56,7 @@ module "test-basiclinuxvm2" {
   name                    = "test2"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
-  secretPasswordName      = "${azurerm_key_vault_secret.serverPassword.name}"
+  admin_password          = "Canada123456!"
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
   nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
@@ -79,10 +78,6 @@ module "test-basiclinuxvm2" {
     private_ip_address_allocation = ["Static"]
   }
   public_ip = true
-  keyvault = {
-    name                = "${azurerm_key_vault.test-keyvault.name}"
-    resource_group_name = "${azurerm_resource_group.test-RG.name}"
-  }
 }
 
 module "test-basiclinuxv3-plan" {
@@ -92,7 +87,7 @@ module "test-basiclinuxv3-plan" {
   name                    = "test3"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
-  secretPasswordName      = "${azurerm_key_vault_secret.serverPassword.name}"
+  admin_password          = "${azurerm_key_vault_secret.serverPassword.value}"
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
   nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
@@ -108,9 +103,5 @@ module "test-basiclinuxv3-plan" {
     name = "fortinet-fortimanager"
     publisher = "fortinet"
     product = "fortinet-fortimanager"
-  }
-  keyvault = {
-    name                = "${azurerm_key_vault.test-keyvault.name}"
-    resource_group_name = "${azurerm_resource_group.test-RG.name}"
   }
 }

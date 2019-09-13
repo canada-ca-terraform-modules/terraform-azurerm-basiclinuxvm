@@ -7,14 +7,14 @@ diskEncrypt = true
 
 variable "encryptDisks" {
   description = "Should the VM disks be encrypted"
-  default     = false
+  default     = null
 }
 
-resource "random_uuid" "SequenceVersion" { }
+resource "random_uuid" "SequenceVersion" {}
 
 resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
 
-  count                      = "${var.encryptDisks == false ? 0 : 1}"
+  count                      = "${var.encryptDisks == null ? 0 : 1}"
   name                       = "AzureDiskEncryption"
   location                   = "${var.location}"
   resource_group_name        = "${var.resource_group_name}"
@@ -27,8 +27,8 @@ resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
   settings = <<SETTINGS
         {  
           "EncryptionOperation": "EnableEncryption",
-          "KeyVaultResourceId": "${data.azurerm_key_vault.keyvaultsecrets.id}",
-          "KeyVaultURL": "${data.azurerm_key_vault.keyvaultsecrets.vault_uri}",
+          "KeyVaultResourceId": "${var.encryptDisks.KeyVaultResourceId}",
+          "KeyVaultURL": "${var.encryptDisks.KeyVaultURL}",
           "KeyEncryptionAlgorithm": "",
           "VolumeType": "All",
           "ResizeOSDisk": false,
