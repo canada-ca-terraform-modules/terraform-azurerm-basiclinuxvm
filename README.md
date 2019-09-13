@@ -51,12 +51,11 @@ module "dockerweb" {
 | name                               | string | yes      | Name of the vm                                                                                                                                                                                              |
 | resource_group_name                | string | yes      | Name of the resourcegroup that will contain the VM resources                                                                                                                                                |
 | admin_username                     | string | yes      | Name of the VM admin account                                                                                                                                                                                |
-| secretPasswordName                 | string | yes      | Name of the Keyvault secret containing the VM admin account password                                                                                                                                        |
+| admin_password                     | string | yes      | Password of the VM admin account                                                                                                                                                                            |
 | nic_subnetName                     | string | yes      | Name of the subnet to which the VM NIC will connect to                                                                                                                                                      |
 | nic_vnetName                       | string | yes      | Name of the VNET the subnet is part of                                                                                                                                                                      |
 | nic_resource_group_name            | string | yes      | Name of the resourcegroup containing the VNET                                                                                                                                                               |
 | vm_size                            | string | yes      | Specifies the desired size of the Virtual Machine. Eg: Standard_F4                                                                                                                                          |
-| keyvault                           | object | yes      | Object containing keyvault resource configuration. - [keyvault](#keyvault-object)                                                                                                                           |
 | location                           | string | no       | Azure location for resources. Default: canadacentral                                                                                                                                                        |
 | tags                               | object | no       | Object containing a tag values - [tags pairs](#tag-object)                                                                                                                                                  |
 | data_disk_sizes_gb                 | list   | no       | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list)                                                                                                                    |
@@ -69,7 +68,7 @@ module "dockerweb" {
 | plan                               | object | no       | Specify the plan used to create the VM. Default is null. - [plan](#plan-object)                                                                                                                             |
 | storage_os_disk                    | object | no       | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
 | custom_data                        | string | no       | some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.sh")}                                                                                                                                |
-| encryptDisk                        | bool   | no       | Configure if VM disks should be encrypted with Bitlocker. Default false                                                                                                                                     |
+| encryptDisk                        | object | no       | Configure if VM disks should be encrypted with Bitlocker. Default null - [encryptDisk](#encryptDisk-object)                                                                                                 |
 | monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
 | shutdownConfig                     | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
 
@@ -198,6 +197,22 @@ monitoringAgent = {
 }
 ```
 
+### encryptDisk object
+
+| Name               | Type   | Required | Value                                                           |
+| ------------------ | ------ | -------- | --------------------------------------------------------------- |
+| KeyVaultResourceId | string | Yes      | ID of the keyvault resource that will store the encryption keys |
+| KeyVaultURL        | string | Yes      | URL of the keyvault that will store the encryption keys         |
+
+Example variable:
+
+```hcl
+encryptDisks = {
+  KeyVaultResourceId: "${azurerm_key_vault.test-keyvault.id}"
+  KeyVaultURL: "${azurerm_key_vault.test-keyvault.vault_uri}"
+}
+```
+
 ### shutdown config object
 
 | Name                           | Type   | Required | Value                                                                                          |
@@ -222,6 +237,9 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
+| 20190913 | 20190913.1 | Remove the need to internally handle keyvault secrets.                            |
+|          |            | Update resource names to align with new naming convention                         |
+|          |            | Update how encryptDisk is handled given the removal of the keyvault variable      |
 | 20190910 | 20190910.1 | Add support for optional plan configuration                                       |
 | 20190829 | 20190829.1 | Add support for multiple IP per NIC and optional Public IP                        |
 | 20190823 |            | Update documentation                                                              |
