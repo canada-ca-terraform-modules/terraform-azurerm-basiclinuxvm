@@ -1,7 +1,10 @@
 /*
 Example:
 
-diskEncrypt = true
+encryptDisks = {
+  KeyVaultResourceId = "${azurerm_key_vault.test-keyvault.id}"
+  KeyVaultURL        = "${azurerm_key_vault.test-keyvault.vault_uri}"
+}
 
 */
 

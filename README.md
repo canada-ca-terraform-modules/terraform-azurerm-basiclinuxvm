@@ -208,8 +208,8 @@ Example variable:
 
 ```hcl
 encryptDisks = {
-  KeyVaultResourceId: "${azurerm_key_vault.test-keyvault.id}"
-  KeyVaultURL: "${azurerm_key_vault.test-keyvault.vault_uri}"
+  KeyVaultResourceId = "${azurerm_key_vault.test-keyvault.id}"
+  KeyVaultURL        = "${azurerm_key_vault.test-keyvault.vault_uri}"
 }
 ```
 
@@ -237,7 +237,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                            |
 | -------- | ---------- | --------------------------------------------------------------------------------- |
-| 20190913 | 20190913.1 | Remove the need to internally handle keyvault secrets.                            |
+| 20190915 | 20190915.1 | Remove the need to internally handle keyvault secrets.                            |
 |          |            | Update resource names to align with new naming convention                         |
 |          |            | Update how encryptDisk is handled given the removal of the keyvault variable      |
 | 20190910 | 20190910.1 | Add support for optional plan configuration                                       |

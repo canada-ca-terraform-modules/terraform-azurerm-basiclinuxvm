@@ -44,8 +44,8 @@ module "test-basiclinuxvm" {
     version   = "latest"
   }
   encryptDisks = {
-    KeyVaultResourceId: "${azurerm_key_vault.test-keyvault.id}"
-    KeyVaultURL: "${azurerm_key_vault.test-keyvault.vault_uri}"
+    KeyVaultResourceId = "${azurerm_key_vault.test-keyvault.id}"
+    KeyVaultURL        = "${azurerm_key_vault.test-keyvault.vault_uri}"
   }
 }
 
