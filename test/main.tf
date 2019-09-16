@@ -31,7 +31,7 @@ module "test-basiclinuxvm" {
   name                    = "test1"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
-  admin_password          = "Canada123456!"
+  admin_password          = "${azurerm_key_vault_secret.serverPassword.value}"
   custom_data             = "${data.template_cloudinit_config.config.rendered}"
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
@@ -47,6 +47,7 @@ module "test-basiclinuxvm" {
     KeyVaultResourceId = "${azurerm_key_vault.test-keyvault.id}"
     KeyVaultURL        = "${azurerm_key_vault.test-keyvault.vault_uri}"
   }
+  public_ip = true
 }
 
 module "test-basiclinuxvm2" {
@@ -56,7 +57,7 @@ module "test-basiclinuxvm2" {
   name                    = "test2"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
-  admin_password          = "Canada123456!"
+  disable_password_authentication          = true
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
   nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
@@ -78,6 +79,7 @@ module "test-basiclinuxvm2" {
     private_ip_address_allocation = ["Static"]
   }
   public_ip = true
+  ssh_key = "${file("ssh/rsa_id.pub")}"
 }
 
 module "test-basiclinuxv3-plan" {

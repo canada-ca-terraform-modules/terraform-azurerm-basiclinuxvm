@@ -93,7 +93,14 @@ resource azurerm_virtual_machine VM {
     }
   }
   os_profile_linux_config {
-    disable_password_authentication = false
+    disable_password_authentication = var.disable_password_authentication
+    dynamic "ssh_keys" {
+      for_each = local.ssh_key
+      content {
+        key_data = "${local.ssh_key[0]}"
+        path = "/home/${var.admin_username}/.ssh/authorized_keys"
+      }
+    }
   }
   storage_os_disk {
     name          = "${var.name}-osdisk1"

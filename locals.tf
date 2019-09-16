@@ -2,4 +2,5 @@
 
 locals {
   plan = var.plan == null ? [] : [var.plan]
+  ssh_key = var.ssh_key == null ? [] : [var.ssh_key]
 }

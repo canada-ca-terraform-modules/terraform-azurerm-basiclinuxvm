@@ -85,6 +85,17 @@ variable "admin_username" {
 
 variable "admin_password" {
   description = "Password of the VM admin account"
+  default = null
+}
+
+variable "ssh_key" {
+  description = "description"
+  default = null
+}
+
+variable "disable_password_authentication" {
+  description = "description"
+  default = "false"
 }
 
 variable "custom_data" {

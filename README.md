@@ -26,7 +26,7 @@ Optional (depending on options configured):
 
 ```terraform
 module "dockerweb" {
-  source = "github.com/canada-ca-terraform-modules/simplevm?ref=20190910.1"
+  source = "github.com/canada-ca-terraform-modules/simplevm?ref=20190916.1"
 
   name                              = "dockerweb"
   resource_group_name               = "some-RG-Name"
@@ -59,6 +59,7 @@ module "dockerweb" {
 | location                           | string | no       | Azure location for resources. Default: canadacentral                                                                                                                                                        |
 | tags                               | object | no       | Object containing a tag values - [tags pairs](#tag-object)                                                                                                                                                  |
 | data_disk_sizes_gb                 | list   | no       | List of data disk sizes in gigabytes required for the VM. - [data disk](#data-disk-list)                                                                                                                    |
+| disable_password_authentication    | boot   | no       | Specifies whether password authentication should be disabled. If set to false, an admin_password must be specified. - Default: false                                                                        |
 | dnsServers                         | list   | no       | List of DNS servers IP addresses as string to use for this NIC, overrides the VNet-level dns server list - [dns servers](#dns-servers-list)                                                                 |
 | nic_enable_ip_forwarding           | bool   | no       | Enables IP Forwarding on the NIC. Default: false                                                                                                                                                            |
 | nic_enable_accelerated_networkingg | bool   | no       | Enables Azure Accelerated Networking using SR-IOV. Only certain VM instance sizes are supported. Default: false                                                                                             |
@@ -67,6 +68,7 @@ module "dockerweb" {
 | storage_image_reference            | object | no       | Specify the storage image used to create the VM. Default is 2016-Datacenter. - [storage image](#storage-image-reference-object)                                                                             |
 | plan                               | object | no       | Specify the plan used to create the VM. Default is null. - [plan](#plan-object)                                                                                                                             |
 | storage_os_disk                    | object | no       | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
+| ssh_key                            | string | no       | The Public SSH Key. - Default: none                                                                                                                                                                         |
 | custom_data                        | string | no       | some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.sh")}                                                                                                                                |
 | encryptDisk                        | object | no       | Configure if VM disks should be encrypted with Bitlocker. Default null - [encryptDisk](#encryptDisk-object)                                                                                                 |
 | monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
@@ -235,14 +237,15 @@ shutdownConfig = {
 
 ## History
 
-| Date     | Release    | Change                                                                            |
-| -------- | ---------- | --------------------------------------------------------------------------------- |
-| 20190915 | 20190915.1 | Remove the need to internally handle keyvault secrets.                            |
-|          |            | Update resource names to align with new naming convention                         |
-|          |            | Update how encryptDisk is handled given the removal of the keyvault variable      |
-| 20190910 | 20190910.1 | Add support for optional plan configuration                                       |
-| 20190829 | 20190829.1 | Add support for multiple IP per NIC and optional Public IP                        |
-| 20190823 |            | Update documentation                                                              |
-| 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution. |
-| 20190806 | 20190806.1 | Add custom dns servers support                                                    |
-| 20190724 |            | 1st deploy                                                                        |
+| Date     | Release    | Change                                                                                       |
+| -------- | ---------- | -------------------------------------------------------------------------------------------- |
+| 20190916 | 20190916.1 | Add support for optional ssh authentication and option for disabling password authentication |
+| 20190915 | 20190915.1 | Remove the need to internally handle keyvault secrets.                                       |
+|          |            | Update resource names to align with new naming convention                                    |
+|          |            | Update how encryptDisk is handled given the removal of the keyvault variable                 |
+| 20190910 | 20190910.1 | Add support for optional plan configuration                                                  |
+| 20190829 | 20190829.1 | Add support for multiple IP per NIC and optional Public IP                                   |
+| 20190823 |            | Update documentation                                                                         |
+| 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution.            |
+| 20190806 | 20190806.1 | Add custom dns servers support                                                               |
+| 20190724 |            | 1st deploy                                                                                   |
