@@ -70,6 +70,7 @@ module "dockerweb" {
 | storage_os_disk                    | object | no       | Storage OS Disk configuration. Default: ReadWrite from image.                                                                                                                                               |
 | ssh_key                            | string | no       | The Public SSH Key. - Default: none                                                                                                                                                                         |
 | custom_data                        | string | no       | some custom ps1 code to execute. Eg: ${file("serverconfig/jumpbox-init.sh")}                                                                                                                                |
+| security_rules                     | list   | no       | [Security rules](#securityrules-object) to be applied to the VM nic through an NSG                                                                                                                          |
 | encryptDisk                        | object | no       | Configure if VM disks should be encrypted with Bitlocker. Default null - [encryptDisk](#encryptDisk-object)                                                                                                 |
 | monitoringAgent                    | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
 | shutdownConfig                     | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
@@ -127,6 +128,52 @@ nic_ip_configuration = {
   private_ip_address            = ["10.20.30.42","10.20.40.43",null]
   private_ip_address_allocation = ["Static","Static","Dynamic"]
 }
+```
+
+### securityrules object
+
+| Name                       | Type   | Required | Value                                                                                                                                                                                                              |
+| -------------------------- | ------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| name                       | string | yes      | The name of the security rule.                                                                                                                                                                                     |
+| description                | string | yes      | A description for this rule. Restricted to 140 characters.                                                                                                                                                         |
+| access                     | string | yes      | Specifies whether network traffic is allowed or denied. Possible values are Allow and Deny.                                                                                                                        |
+| priority                   | string | yes      | Specifies the priority of the rule. The value can be between 100 and 4096. The priority number must be unique for each rule in the collection. The lower the priority number, the higher the priority of the rule. |
+| protocol                   | string | yes      | Network protocol this rule applies to. Can be Tcp, Udp or * to match both.                                                                                                                                         |
+| direction                  | string | yes      | The direction specifies if rule will be evaluated on incoming or outgoing traffic. Possible values are Inbound and Outbound.                                                                                       |
+| source_port_ranges         | string | yes      | List of source ports or port ranges.                                                                                                                                                                               |
+| source_address_prefix      | string | yes      | CIDR or source IP range or * to match any IP. Tags such as ‘VirtualNetwork’, ‘AzureLoadBalancer’ and ‘Internet’ can also be used.                                                                                  |
+| destination_port_ranges    | string | yes      | Destination Port or Range. Integer or range between 0 and 65535 or * to match any.                                                                                                                                 |
+| destination_address_prefix | string | yes      | CIDR or destination IP range or * to match any IP. Tags such as ‘VirtualNetwork’, ‘AzureLoadBalancer’ and ‘Internet’ can also be used.                                                                             |
+
+Example variable:
+
+```hcl
+security_rules = [
+    {
+      name                       = "AllowAllInbound"
+      description                = "Allow all in"
+      access                     = "Allow"
+      priority                   = "100"
+      protocol                   = "*"
+      direction                  = "Inbound"
+      source_port_ranges         = "*"
+      source_address_prefix      = "*"
+      destination_port_ranges    = "*"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "AllowAllOutbound"
+      description                = "Allow all out"
+      access                     = "Allow"
+      priority                   = "105"
+      protocol                   = "*"
+      direction                  = "Outbound"
+      source_port_ranges         = "*"
+      source_address_prefix      = "*"
+      destination_port_ranges    = "*"
+      destination_address_prefix = "*"
+    }
+  ]
 ```
 
 ### storage image reference object
@@ -239,6 +286,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                                       |
 | -------- | ---------- | -------------------------------------------------------------------------------------------- |
+| 20190917 | 20190917.1 | Add support for optional NSG Security rules                                                  |
 | 20190916 | 20190916.1 | Add support for optional ssh authentication and option for disabling password authentication |
 | 20190915 | 20190915.1 | Remove the need to internally handle keyvault secrets.                                       |
 |          |            | Update resource names to align with new naming convention                                    |

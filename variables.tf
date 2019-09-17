@@ -70,6 +70,36 @@ variable "nic_ip_configuration" {
   }
 }
 
+variable "security_rules" {
+  type = list(map(string))
+  default = [
+    {
+      name                       = "AllowAllInbound"
+      description                = "Allow all in"
+      access                     = "Allow"
+      priority                   = "100"
+      protocol                   = "*"
+      direction                  = "Inbound"
+      source_port_ranges         = "*"
+      source_address_prefix      = "*"
+      destination_port_ranges    = "*"
+      destination_address_prefix = "*"
+    },
+    {
+      name                       = "AllowAllOutbound"
+      description                = "Allow all out"
+      access                     = "Allow"
+      priority                   = "105"
+      protocol                   = "*"
+      direction                  = "Outbound"
+      source_port_ranges         = "*"
+      source_address_prefix      = "*"
+      destination_port_ranges    = "*"
+      destination_address_prefix = "*"
+    }
+  ]
+}
+
 variable "public_ip" {
   description = "Should the VM be assigned public IP(s). True or false."
   default     = false

@@ -2,29 +2,31 @@ resource azurerm_network_security_group NSG {
   name                = "${var.name}-nsg"
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
-  security_rule {
-    name                       = "AllowAllInbound"
-    description                = "Allow all in"
-    access                     = "Allow"
-    priority                   = "100"
-    protocol                   = "*"
-    direction                  = "Inbound"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "*"
-    destination_address_prefix = "*"
-  }
-  security_rule {
-    name                       = "AllowAllOutbound"
-    description                = "Allow all out"
-    access                     = "Allow"
-    priority                   = "105"
-    protocol                   = "*"
-    direction                  = "Outbound"
-    source_port_range          = "*"
-    source_address_prefix      = "*"
-    destination_port_range     = "*"
-    destination_address_prefix = "*"
+  dynamic "security_rule" {
+    for_each = [for s in var.security_rules : {
+      name                       = s.name
+      priority                   = s.priority
+      direction                  = s.direction
+      access                     = s.access
+      protocol                   = s.protocol
+      source_port_ranges         = split(",", replace(s.source_port_ranges, "*", "0-65535"))
+      destination_port_ranges    = split(",", replace(s.destination_port_ranges, "*", "0-65535"))
+      source_address_prefix      = s.source_address_prefix
+      destination_address_prefix = s.destination_address_prefix
+      description                = s.description
+    }]
+    content {
+      name                       = security_rule.value.name
+      priority                   = security_rule.value.priority
+      direction                  = security_rule.value.direction
+      access                     = security_rule.value.access
+      protocol                   = security_rule.value.protocol
+      source_port_ranges         = security_rule.value.source_port_ranges
+      destination_port_ranges    = security_rule.value.destination_port_ranges
+      source_address_prefix      = security_rule.value.source_address_prefix
+      destination_address_prefix = security_rule.value.destination_address_prefix
+      description                = security_rule.value.description
+    }
   }
   tags = "${var.tags}"
 }
