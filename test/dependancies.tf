@@ -27,8 +27,8 @@ resource "azurerm_key_vault" "test-keyvault" {
   enabled_for_template_deployment = true
   access_policy {
     tenant_id = "${data.azurerm_client_config.current.tenant_id}"
-    #object_id = "${data.azurerm_client_config.current.service_principal_object_id}"
-    object_id = "267cced3-2154-43ff-b79b-b12c331ad1d1"
+    object_id = "${data.azurerm_client_config.current.service_principal_object_id}"
+    #object_id = "267cced3-2154-43ff-b79b-b12c331ad1d1"
     key_permissions = [
       "Get",
       "List",

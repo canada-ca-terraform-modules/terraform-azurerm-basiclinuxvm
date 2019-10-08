@@ -70,6 +70,11 @@ variable "nic_ip_configuration" {
   }
 }
 
+variable "load_balancer_backend_address_pools_ids" {
+  description = "List of Load Balancer Backend Address Pool IDs references to which this NIC belongs"
+  default     = [[], [], [], [], [], [], [], [], [], [], [], []]
+}
+
 variable "security_rules" {
   type = list(map(string))
   default = [
@@ -118,6 +123,14 @@ variable "admin_password" {
   default = null
 }
 
+variable "os_managed_disk_type" {
+  default = "Standard_LRS"
+}
+
+variable "data_managed_disk_type" {
+  default = "Standard_LRS"
+}
+
 variable "ssh_key" {
   description = "description"
   default = null
@@ -160,4 +173,18 @@ variable "storage_os_disk" {
     os_type       = null
     disk_size_gb  = null
   }
+}
+
+variable "license_type" {
+  description = "BYOL license type for those with Azure Hybrid Benefit"
+  default     = null
+}
+
+variable "boot_diagnostic" {
+  default = false
+}
+
+variable "availability_set_id" {
+  description = "Sets the id for the availability set to use for the VM"
+  default     = null
 }

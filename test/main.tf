@@ -9,7 +9,6 @@ locals {
   template_name = "basiclinuxvm"
 }
 
-
 data "azurerm_client_config" "current" {}
 
 data "template_file" "cloudconfig" {
@@ -31,7 +30,7 @@ module "test-basiclinuxvm" {
   name                    = "test1"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
-  admin_password          = "${azurerm_key_vault_secret.serverPassword.value}"
+  admin_password          = "Canada123!"
   custom_data             = "${data.template_cloudinit_config.config.rendered}"
   nic_subnetName          = "${azurerm_subnet.subnet1.name}"
   nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
@@ -51,19 +50,19 @@ module "test-basiclinuxvm" {
 }
 
 module "test-basiclinuxvm2" {
-  source = "../."
-
-  vm_depends_on           = ["${module.test-basiclinuxvm.vm}"]
-  name                    = "test2"
-  resource_group_name     = "${azurerm_resource_group.test-RG.name}"
-  admin_username          = "azureadmin"
-  disable_password_authentication          = true
-  nic_subnetName          = "${azurerm_subnet.subnet1.name}"
-  nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
-  nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
-  dnsServers              = ["168.63.129.16"]
-  vm_size                 = "Standard_B2ms"
-  data_disk_sizes_gb      = [40, 60]
+  source                          = "../."
+  vm_depends_on                   = ["${azurerm_log_analytics_workspace.logAnalyticsWS.name}"]
+  name                            = "test2"
+  resource_group_name             = "${azurerm_resource_group.test-RG.name}"
+  admin_username                  = "azureadmin"
+  admin_password                  = "Canada123!"
+  disable_password_authentication = true
+  nic_subnetName                  = "${azurerm_subnet.subnet1.name}"
+  nic_vnetName                    = "${azurerm_virtual_network.test-VNET.name}"
+  nic_resource_group_name         = "${azurerm_resource_group.test-RG.name}"
+  dnsServers                      = ["168.63.129.16"]
+  vm_size                         = "Standard_B2ms"
+  data_disk_sizes_gb              = [40, 60]
   monitoringAgent = {
     log_analytics_workspace_name                = "${azurerm_log_analytics_workspace.logAnalyticsWS.name}"
     log_analytics_workspace_resource_group_name = "${azurerm_resource_group.test-RG.name}"
@@ -79,14 +78,45 @@ module "test-basiclinuxvm2" {
     private_ip_address_allocation = ["Static"]
   }
   public_ip = true
-  ssh_key = "${file("ssh/rsa_id.pub")}"
+  ssh_key   = "${file("ssh/rsa_id.pub")}"
 }
 
+
+module "test-basiclinuxvm3" {
+  source = "../."
+
+  name                = "testssh"
+  resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  admin_username      = "azureadmin"
+  admin_password      = "Canada123!"
+  #disable_password_authentication = true
+  nic_subnetName          = "${azurerm_subnet.subnet1.name}"
+  nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
+  nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  vm_size                 = "Standard_B2ms"
+  public_ip               = true
+  ssh_key                 = "${file("ssh/rsa_id.pub")}"
+}
+
+module "test-basiclinuxvm4" {
+  source = "../."
+
+  name                    = "testnossh"
+  resource_group_name     = "${azurerm_resource_group.test-RG.name}"
+  admin_username          = "azureadmin"
+  admin_password          = "Canada123!"
+  nic_subnetName          = "${azurerm_subnet.subnet1.name}"
+  nic_vnetName            = "${azurerm_virtual_network.test-VNET.name}"
+  nic_resource_group_name = "${azurerm_resource_group.test-RG.name}"
+  vm_size                 = "Standard_B2ms"
+  public_ip               = true
+}
+/*
 module "test-basiclinuxv3-plan" {
   source = "../."
 
   vm_depends_on           = ["${module.test-basiclinuxvm.vm}"]
-  name                    = "test3"
+  name                    = "testplan"
   resource_group_name     = "${azurerm_resource_group.test-RG.name}"
   admin_username          = "azureadmin"
   admin_password          = "${azurerm_key_vault_secret.serverPassword.value}"
@@ -107,3 +137,4 @@ module "test-basiclinuxv3-plan" {
     product = "fortinet-fortimanager"
   }
 }
+*/
