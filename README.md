@@ -291,6 +291,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                                       |
 | -------- | ---------- | -------------------------------------------------------------------------------------------- |
+| 20191125 | 20191125.1 | Add nic_depends_on support                                                                   |
 | 20191015 | 20191015.1 | Adopt new VM resource naming convention                                                      |
 | 20191008 | 20191008.1 | Adding support for os and data managed disk type                                             |
 |          |            | Add support for LB backend pool IDs                                                          |

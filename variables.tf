@@ -37,7 +37,7 @@ variable "name" {
 
 variable "data_disk_sizes_gb" {
   description = "List of data disk sizes in gigabytes required for the VM. EG.: If 3 data disks are required then data_disk_size_gb might look like [40,100,60] for disk 1 of 40 GB, disk 2 of 100 GB and disk 3 of 60 GB"
-  default = []
+  default     = []
 }
 
 variable "nic_subnetName" {
@@ -120,7 +120,7 @@ variable "admin_username" {
 
 variable "admin_password" {
   description = "Password of the VM admin account"
-  default = null
+  default     = null
 }
 
 variable "os_managed_disk_type" {
@@ -133,12 +133,12 @@ variable "data_managed_disk_type" {
 
 variable "ssh_key" {
   description = "description"
-  default = null
+  default     = null
 }
 
 variable "disable_password_authentication" {
   description = "description"
-  default = "false"
+  default     = "false"
 }
 
 variable "custom_data" {
@@ -162,7 +162,7 @@ variable "storage_image_reference" {
 
 variable "plan" {
   description = "An optional plan block"
-  default = null
+  default     = null
 }
 
 variable "storage_os_disk" {
@@ -187,4 +187,8 @@ variable "boot_diagnostic" {
 variable "availability_set_id" {
   description = "Sets the id for the availability set to use for the VM"
   default     = null
+}
+
+variable "use_nic_nsg" {
+  default = true
 }

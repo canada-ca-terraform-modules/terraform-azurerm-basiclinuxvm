@@ -1,5 +1,6 @@
 resource azurerm_network_security_group NSG {
   name                = "${var.name}-nsg"
+  count               = var.use_nic_nsg ? 1 : 0
   location            = "${var.location}"
   resource_group_name = "${var.resource_group_name}"
   dynamic "security_rule" {
@@ -53,11 +54,12 @@ resource azurerm_public_ip VM-EXT-PubIP {
 
 resource azurerm_network_interface NIC {
   name                          = "${var.name}-nic1"
+  depends_on                    = [var.nic_depends_on]
   location                      = "${var.location}"
   resource_group_name           = "${var.resource_group_name}"
   enable_ip_forwarding          = "${var.nic_enable_ip_forwarding}"
   enable_accelerated_networking = "${var.nic_enable_accelerated_networking}"
-  network_security_group_id     = "${azurerm_network_security_group.NSG.id}"
+  network_security_group_id     = var.use_nic_nsg ? "${azurerm_network_security_group.NSG[0].id}" : null
   dns_servers                   = "${var.dnsServers}"
   dynamic "ip_configuration" {
     for_each = var.nic_ip_configuration.private_ip_address_allocation
