@@ -308,3 +308,5 @@ shutdownConfig = {
 | 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution.            |
 | 20190806 | 20190806.1 | Add custom dns servers support                                                               |
 | 20190724 |            | 1st deploy                                                                                   |
+| 20191211 | 20191211.1 | Change monitoring and encryption deployment order                                            |
+|          |            | Upgraded code to terraform 12 removing interpolations.                                       |

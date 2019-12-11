@@ -1,8 +1,8 @@
 resource azurerm_network_security_group NSG {
   name                = "${var.name}-nsg"
-  count               = var.use_nic_nsg ? 1 : 0
-  location            = "${var.location}"
-  resource_group_name = "${var.resource_group_name}"
+  count               = "${var.use_nic_nsg ? 1 : 0}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
   dynamic "security_rule" {
     for_each = [for s in var.security_rules : {
       name                       = s.name
@@ -33,34 +33,34 @@ resource azurerm_network_security_group NSG {
 }
 
 resource "azurerm_storage_account" "boot_diagnostic" {
-  count                    = var.boot_diagnostic ? 1 : 0
-  name                     = "${local.storageName}"
-  resource_group_name      = "${var.resource_group_name}"
-  location                 = "${var.location}"
+  count                    = "${var.boot_diagnostic ? 1 : 0}"
+  name                     = local.storageName
+  resource_group_name      = var.resource_group_name
+  location                 = var.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 }
 
 # If public_ip is true then create resource. If not then do not create any
 resource azurerm_public_ip VM-EXT-PubIP {
-  count               = var.public_ip ? length(var.nic_ip_configuration.private_ip_address_allocation) : 0
+  count               = "${var.public_ip ? length(var.nic_ip_configuration.private_ip_address_allocation) : 0}"
   name                = "${var.name}-pip${count.index + 1}"
-  location            = "${var.location}"
-  resource_group_name = "${var.resource_group_name}"
+  location            = var.location
+  resource_group_name = var.resource_group_name
   sku                 = "Standard"
   allocation_method   = "Static"
-  tags                = "${var.tags}"
+  tags                = var.tags
 }
 
 resource azurerm_network_interface NIC {
   name                          = "${var.name}-nic1"
   depends_on                    = [var.nic_depends_on]
-  location                      = "${var.location}"
-  resource_group_name           = "${var.resource_group_name}"
-  enable_ip_forwarding          = "${var.nic_enable_ip_forwarding}"
-  enable_accelerated_networking = "${var.nic_enable_accelerated_networking}"
-  network_security_group_id     = var.use_nic_nsg ? "${azurerm_network_security_group.NSG[0].id}" : null
-  dns_servers                   = "${var.dnsServers}"
+  location                      = var.location
+  resource_group_name           = var.resource_group_name
+  enable_ip_forwarding          = var.nic_enable_ip_forwarding
+  enable_accelerated_networking = var.nic_enable_accelerated_networking
+  network_security_group_id     = var.use_nic_nsg ? azurerm_network_security_group.NSG[0].id : null
+  dns_servers                   = var.dnsServers
   dynamic "ip_configuration" {
     for_each = var.nic_ip_configuration.private_ip_address_allocation
     content {
