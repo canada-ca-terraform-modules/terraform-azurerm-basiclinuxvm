@@ -17,11 +17,12 @@ resource "random_uuid" "SequenceVersion" {}
 
 resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
 
-  count                      = "${var.encryptDisks == null ? 0 : 1}"
+  count                      = var.encryptDisks == null ? 0 : 1
   name                       = "AzureDiskEncryption"
-  location                   = "${var.location}"
-  resource_group_name        = "${var.resource_group_name}"
-  virtual_machine_name       = "${azurerm_virtual_machine.VM.name}"
+  location                   = var.location
+  resource_group_name        = var.resource_group_name
+  depends_on                 = [azurerm_virtual_machine_extension.OmsAgentForLinux]
+  virtual_machine_name       = azurerm_virtual_machine.VM.name
   publisher                  = "Microsoft.Azure.Security"
   type                       = "AzureDiskEncryptionForLinux"
   type_handler_version       = "1.1"
@@ -39,5 +40,5 @@ resource "azurerm_virtual_machine_extension" "AzureDiskEncryption" {
         }
   SETTINGS
 
-  tags = "${var.tags}"
+  tags = var.tags
 }
