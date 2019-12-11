@@ -1,5 +1,5 @@
 output "vm" {
-  value = "${azurerm_virtual_machine.VM}"
+  value = azurerm_virtual_machine.VM
 }
 
 output "pip" {
