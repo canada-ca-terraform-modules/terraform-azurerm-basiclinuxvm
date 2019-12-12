@@ -15,10 +15,10 @@ variable "shutdownConfig" {
 }
 
 resource "azurerm_template_deployment" "autoshutdown" {
-  count               = "${var.shutdownConfig == null ? 0 : 1}"
+  count               = var.shutdownConfig == null ? 0 : 1
   name                = "autoshutdown"
-  resource_group_name = "${var.resource_group_name}"
-  depends_on          = ["azurerm_virtual_machine_extension.OmsAgentForLinux"]
+  resource_group_name = var.resource_group_name
+  depends_on          = [azurerm_virtual_machine.VM]
   template_body       = <<DEPLOY
 {
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
@@ -72,10 +72,10 @@ DEPLOY
 
   # these key-value pairs are passed into the ARM Template's `parameters` block
   parameters = {
-    "computerName" = "${azurerm_virtual_machine.VM.name}"
-    "autoShutdownStatus" = "${var.shutdownConfig.autoShutdownStatus}"
-    "autoShutdownTime" = "${var.shutdownConfig.autoShutdownTime}"
-    "autoShutdownTimeZone" = "${var.shutdownConfig.autoShutdownTimeZone}"
+    "computerName"                   = "${azurerm_virtual_machine.VM.name}"
+    "autoShutdownStatus"             = "${var.shutdownConfig.autoShutdownStatus}"
+    "autoShutdownTime"               = "${var.shutdownConfig.autoShutdownTime}"
+    "autoShutdownTimeZone"           = "${var.shutdownConfig.autoShutdownTimeZone}"
     "autoShutdownNotificationStatus" = "${var.shutdownConfig.autoShutdownNotificationStatus}"
   }
 
