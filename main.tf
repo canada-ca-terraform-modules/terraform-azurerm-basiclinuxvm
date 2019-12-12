@@ -43,7 +43,7 @@ resource "azurerm_storage_account" "boot_diagnostic" {
 
 # If public_ip is true then create resource. If not then do not create any
 resource azurerm_public_ip VM-EXT-PubIP {
-  count               = "${var.public_ip ? length(var.nic_ip_configuration.private_ip_address_allocation) : 0}"
+  count               = var.public_ip ? length(var.nic_ip_configuration.private_ip_address_allocation) : 0
   name                = "${var.name}-pip${count.index + 1}"
   location            = var.location
   resource_group_name = var.resource_group_name
