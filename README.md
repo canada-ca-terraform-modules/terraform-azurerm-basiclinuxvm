@@ -310,5 +310,5 @@ shutdownConfig = {
 | 20190806 | 20190806.1 | Add custom dns servers support                                                               |
 | 20190724 |            | 1st deploy                                                                                   |
 | 20191211 | 20191211.2 | Change monitoring and encryption deployment order                                            |
-|          |            | Upgraded code to terraform 12 removing interpolations.                                       |
-| 20191211 | 20191211.3 | Added dependancy agent for service map support                                               |
+|          | 20191211.3 | Upgraded code to terraform 12 removing interpolations.                                       |
+| 20191211 | 20191211.4 | Added dependancy agent for service map support                                               |
