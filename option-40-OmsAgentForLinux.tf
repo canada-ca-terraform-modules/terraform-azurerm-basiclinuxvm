@@ -24,10 +24,7 @@ resource "azurerm_virtual_machine_extension" "OmsAgentForLinux" {
 
   count                      = var.monitoringAgent == null ? 0 : 1
   name                       = "OmsAgentForLinux"
-<<<<<<< HEAD:option-40-OmsAgentForLinux.tf
   depends_on                 = [azurerm_template_deployment.autoshutdown]
-=======
->>>>>>> 6728fdc126db8baa094d40598d8e18f92ccbc027:option-20-monitoringAgent.tf
   location                   = var.location
   resource_group_name        = var.resource_group_name
   virtual_machine_name       = azurerm_virtual_machine.VM.name
