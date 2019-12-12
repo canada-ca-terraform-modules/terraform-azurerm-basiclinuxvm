@@ -13,6 +13,7 @@ variable "monitoringAgent" {
   default     = null
 }
 
+
 data "azurerm_log_analytics_workspace" "logAnalyticsWS" {
   count               = var.monitoringAgent == null ? 0 : 1
   name                = var.monitoringAgent.log_analytics_workspace_name
@@ -24,7 +25,6 @@ resource "azurerm_virtual_machine_extension" "OmsAgentForLinux" {
 
   count                      = var.monitoringAgent == null ? 0 : 1
   name                       = "OmsAgentForLinux"
-  depends_on                 = [azurerm_template_deployment.autoshutdown]
   location                   = var.location
   resource_group_name        = var.resource_group_name
   virtual_machine_name       = azurerm_virtual_machine.VM.name
@@ -48,5 +48,17 @@ resource "azurerm_virtual_machine_extension" "OmsAgentForLinux" {
   tags = var.tags
 }
 
+resource "azurerm_virtual_machine_extension" "DAAgentForLinux" {
 
-
+  count                      = var.dependancyAgent == null ? 0 : 1
+  name                       = "DAAgentForLinux"
+  location                   = var.location
+  resource_group_name        = var.resource_group_name
+  virtual_machine_name       = azurerm_virtual_machine.VM.name
+  publisher                  = "Microsoft.Azure.Monitoring.DependencyAgent"
+  type                       = "DependencyAgentLinux"
+  type_handler_version       = "9.5"
+  auto_upgrade_minor_version = true
+  depends_on                 = [azurerm_virtual_machine_extension.OmsAgentForLinux]
+  tags = var.tags
+}

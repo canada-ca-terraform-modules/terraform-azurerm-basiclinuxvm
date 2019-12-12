@@ -76,6 +76,7 @@ module "dockerweb" {
 | security_rules                          | list   | no       | [Security rules](#securityrules-object) to be applied to the VM nic through an NSG                                                                                                                          |
 | encryptDisk                             | object | no       | Configure if VM disks should be encrypted with Bitlocker. Default null - [encryptDisk](#encryptDisk-object)                                                                                                 |
 | monitoringAgent                         | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
+| dependancyAgent                         | bool   | no       | Installs the dependancy agent for service map support. Default: false                                                                      
 | shutdownConfig                          | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
 | boot_diagnostic                         | bool   | no       | Should a boot be turned on or not. Default: false                                                                                                                                                           |
 | availability_set_id                     | string | no       | Id of the availaiblity set to join. Default is null.                                                                                                                                                        |
@@ -308,5 +309,6 @@ shutdownConfig = {
 | 20190812 | 20190812.1 | Improve documentation. Add testing of module. Improve module dependancy solution.            |
 | 20190806 | 20190806.1 | Add custom dns servers support                                                               |
 | 20190724 |            | 1st deploy                                                                                   |
-| 20191211 | 20191211.1 | Change monitoring and encryption deployment order                                            |
-|          |            | Upgraded code to terraform 12 removing interpolations.                                       |
+| 20191211 | 20191211.2 | Change monitoring and encryption deployment order                                            |
+|          | 20191211.3 | Upgraded code to terraform 12 removing interpolations.                                       |
+| 20191211 | 20191211.4 | Added dependancy agent for service map support                                               |
