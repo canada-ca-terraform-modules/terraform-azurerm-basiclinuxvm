@@ -312,3 +312,4 @@ shutdownConfig = {
 | 20191211 | 20191211.2 | Change monitoring and encryption deployment order                                            |
 |          | 20191211.3 | Upgraded code to terraform 12 removing interpolations.                                       |
 | 20191211 | 20191211.4 | Added dependancy agent for service map support                                               |
+| 20191211 | 20191211.6 | Moved encryption to deploy after dependancy agent                                            |
