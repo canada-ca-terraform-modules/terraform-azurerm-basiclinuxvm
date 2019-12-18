@@ -23,7 +23,7 @@ data "template_cloudinit_config" "config" {
     content = data.template_file.cloudconfig.rendered
   }
 }
-
+/*
 module "test-basiclinuxvm" {
   source = "../."
 
@@ -48,6 +48,7 @@ module "test-basiclinuxvm" {
   }
   public_ip = true
 }
+*/
 
 module "test-basiclinuxvm2" {
   source                          = "../."
@@ -64,15 +65,17 @@ module "test-basiclinuxvm2" {
   vm_size                         = "Standard_B2ms"
   data_disk_sizes_gb              = [40, 60]
   monitoringAgent = {
-    log_analytics_workspace_name                = azurerm_log_analytics_workspace.logAnalyticsWS.name
-    log_analytics_workspace_resource_group_name = azurerm_resource_group.test-RG.name
+    workspace_id       = azurerm_log_analytics_workspace.logAnalyticsWS.workspace_id
+    primary_shared_key = azurerm_log_analytics_workspace.logAnalyticsWS.primary_shared_key
   }
+  /*
   shutdownConfig = {
     autoShutdownStatus             = "Enabled"
     autoShutdownTime               = "17:00"
     autoShutdownTimeZone           = "Eastern Standard Time"
     autoShutdownNotificationStatus = "Disabled"
   }
+  */
   nic_ip_configuration = {
     private_ip_address            = ["10.10.10.10"]
     private_ip_address_allocation = ["Static"]
@@ -81,7 +84,7 @@ module "test-basiclinuxvm2" {
   ssh_key   = file("ssh/rsa_id.pub")
 }
 
-
+/*
 module "test-basiclinuxvm3" {
   source = "../."
 
@@ -111,7 +114,7 @@ module "test-basiclinuxvm4" {
   vm_size                 = "Standard_B2ms"
   public_ip               = true
 }
-/*
+
 module "test-basiclinuxv3-plan" {
   source = "../."
 

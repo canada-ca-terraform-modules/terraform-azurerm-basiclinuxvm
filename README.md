@@ -76,7 +76,7 @@ module "dockerweb" {
 | security_rules                          | list   | no       | [Security rules](#securityrules-object) to be applied to the VM nic through an NSG                                                                                                                          |
 | encryptDisk                             | object | no       | Configure if VM disks should be encrypted with Bitlocker. Default null - [encryptDisk](#encryptDisk-object)                                                                                                 |
 | monitoringAgent                         | object | no       | Configure Azure monitoring on VM. Requires configured log analytics workspace. - [monitoring agent](#monitoring-agent-object)                                                                               |
-| dependancyAgent                         | bool   | no       | Installs the dependancy agent for service map support. Default: false                                                                      
+| dependancyAgent                         | bool   | no       | Installs the dependancy agent for service map support. Default: false                                                                                                                                       |
 | shutdownConfig                          | object | no       | Configure desired VM shutdown time - [shutdown config](#shutdown-config-object)                                                                                                                             |
 | boot_diagnostic                         | bool   | no       | Should a boot be turned on or not. Default: false                                                                                                                                                           |
 | availability_set_id                     | string | no       | Id of the availaiblity set to join. Default is null.                                                                                                                                                        |
@@ -246,10 +246,10 @@ keyvault = {
 Example variable:
 
 ```hcl
-monitoringAgent = {
-  log_analytics_workspace_name                = "somename"
-  log_analytics_workspace_resource_group_name = "someRGName"
-}
+  monitoringAgent = {
+    workspace_id       = azurerm_log_analytics_workspace.logAnalyticsWS.workspace_id
+    primary_shared_key = azurerm_log_analytics_workspace.logAnalyticsWS.primary_shared_key
+  }
 ```
 
 ### encryptDisk object
@@ -292,6 +292,7 @@ shutdownConfig = {
 
 | Date     | Release    | Change                                                                                       |
 | -------- | ---------- | -------------------------------------------------------------------------------------------- |
+| 20191218 | 20191218   | Cleanup code. Change how OMS workspace info is passed to module. WARNING!                    |
 | 20191125 | 20191125.1 | Add nic_depends_on support                                                                   |
 | 20191015 | 20191015.1 | Adopt new VM resource naming convention                                                      |
 | 20191008 | 20191008.1 | Adding support for os and data managed disk type                                             |

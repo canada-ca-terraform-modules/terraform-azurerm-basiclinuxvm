@@ -13,13 +13,6 @@ variable "monitoringAgent" {
   default     = null
 }
 
-data "azurerm_log_analytics_workspace" "logAnalyticsWS" {
-  count               = var.monitoringAgent == null ? 0 : 1
-  name                = var.monitoringAgent.log_analytics_workspace_name
-  resource_group_name = var.monitoringAgent.log_analytics_workspace_resource_group_name
-  depends_on          = [var.vm_depends_on]
-}
-
 resource "azurerm_virtual_machine_extension" "OmsAgentForLinux" {
 
   count                      = var.monitoringAgent == null ? 0 : 1
@@ -35,13 +28,13 @@ resource "azurerm_virtual_machine_extension" "OmsAgentForLinux" {
 
   settings = <<SETTINGS
         {  
-          "workspaceId": "${data.azurerm_log_analytics_workspace.logAnalyticsWS[0].workspace_id}"
+          "workspaceId": "${var.monitoringAgent.workspace_id}"
         }
   SETTINGS
 
   protected_settings = <<PROTECTED_SETTINGS
         {
-          "workspaceKey": "${data.azurerm_log_analytics_workspace.logAnalyticsWS[0].primary_shared_key}"
+          "workspaceKey": "${var.monitoringAgent.primary_shared_key}"
         }
   PROTECTED_SETTINGS
 
