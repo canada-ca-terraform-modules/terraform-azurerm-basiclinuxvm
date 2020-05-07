@@ -1,5 +1,9 @@
 # Terraform Basic Linux Virtual Machine
 
+## Deprecation notice
+
+This module is no longer maintained and has been replaced with the following module: https://github.com/canada-ca-terraform-modules/terraform-azurerm_linux_virtual_machine
+
 ## Introduction
 
 This module deploys a simple [virtual machine resource](https://docs.microsoft.com/en-us/azure/templates/microsoft.compute/2019-03-01/virtualmachines) with an NSG, 1 NIC and a simple OS Disk.
